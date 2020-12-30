@@ -35,21 +35,21 @@ def build_model(input_shape):
     Your function should return the model.
     """
     initializer = tf.keras.initializers.RandomUniform(0.1, 0.15)
+    regu = regularizers.l2(5e-4)
 
     model = tf.keras.Sequential([
-        Dense(64, activation='relu', kernel_initializer='GlorotUniform', bias_initializer='zeros', \
+        Dense(64, activation='relu', kernel_regularizer=regu, kernel_initializer='HeUniform', bias_initializer='zeros',
               input_shape=input_shape, name='dense_one'),
         BatchNormalization(),  # <- Batch normalisation layer
-        Dense(64, activation='relu', kernel_initializer='GlorotUniform', bias_initializer='zeros', name='dense_two'),
+        Dense(64, activation='relu', kernel_initializer='HeUniform', bias_initializer='zeros', name='dense_two'),
         BatchNormalization(),
-        Dense(64, activation='relu', kernel_initializer='GlorotUniform', bias_initializer='zeros', name='dense_three'),
+        Dense(64, activation='relu', kernel_initializer='HeUniform', bias_initializer='zeros', name='dense_three'),
         BatchNormalization(),
-        # Dense(256, activation='relu', kernel_initializer='GlorotUniform', bias_initializer='zeros', name='dense_four'),
-        # BatchNormalization(),
-        # Dense(64, activation='relu',name='dense_three'),
-        # BatchNormalization(),
-        # Dense(64, activation='relu',name='dense_four'),
-        Dense(1, kernel_initializer='GlorotUniform')
+        Dense(64, activation='relu', kernel_initializer='HeUniform', bias_initializer='zeros', name='dense_four'),
+        BatchNormalization(),
+        Dense(64, activation='relu', kernel_initializer='HeUniform', bias_initializer='zeros', name='dense_five'),
+        BatchNormalization(),
+        Dense(1, kernel_initializer='HeUniform')
     ])
 
     return model
@@ -85,8 +85,8 @@ def compile_model(model):
     loss function and metric.
     The function doesn't need to return anything; the model will be compiled in-place.
     """
-    opt = keras.optimizers.Adam(learning_rate=0.001)
-    model.compile(loss=tf.keras.metrics.mean_squared_error, optimizer=opt,\
+    opt = keras.optimizers.Adam(learning_rate=5e-6)
+    model.compile(loss=tf.keras.metrics.mean_squared_error, optimizer=opt,
                   metrics=[tf.keras.metrics.MeanSquaredError(name='mse')])
 
 
@@ -100,13 +100,13 @@ def train_model(model, train_data, train_targets, epochs):
     train_data and train_targets.
     Your function should return the training history, as returned by model.fit.
     """
-    history = model.fit(train_data, train_targets, epochs=epochs, validation_split=0.2, batch_size=128, verbose=1)
+    history = model.fit(train_data, train_targets, epochs=epochs, validation_split=0.2, batch_size=10, verbose=1)
 
     return history
 
 #%%
 
-history = train_model(model, x_train_standard, y_train_shuffled, epochs=600)
+history = train_model(model, x_train_standard, y_train_shuffled, epochs=20)
 
 #%%
 
@@ -127,14 +127,14 @@ ax = sns.lineplot(x = 'y/d', y = 'y_test', marker="o", data = d)
 ax.set_title('Validation with test value')
 plt.legend(['Predicted', 'Label'], loc='upper right')
 plt.show()
-fig.savefig('test.png', dpi=500)
+fig.savefig('64-test.png', dpi=500)
 
 #%%
 
 # creating output file for test data
 d = {'y/d': P.X_test['y/d'], 'pred_P': example_result, 'y_test': y_test, 'mse': np.square(example_result-y_test)}
 output_df_test = pd.DataFrame(data=d).sort_values(by=['y/d'])
-output_df_test.to_excel("output_df_test.xlsx")
+output_df_test.to_excel("64-output_df_test.xlsx")
 #%%
 epoch = len(history.history['loss'])
 list_epoch = [ x+1 if x % 1 == 0 else x for x in range(epoch)]
@@ -143,18 +143,18 @@ d = {'epochs': [ x+1 if x % 1 == 0 else x for x in range(epoch)], 'loss': histor
      'val_loss': history.history['val_loss']}
 
 output_df_loss = pd.DataFrame(data=d).sort_values(by=['epochs'])
-output_df_loss.to_excel("output_df_loss.xlsx")
+output_df_loss.to_excel("64-output_df_loss.xlsx")
 
 #%%
 
 validate_batch = P._set_normalization_values_validation(test=False)
-validate_batch = model.predict(validate_batch[:77])
+validate_batch = model.predict(validate_batch[:62])
 validate_batch = np.reshape(validate_batch, validate_batch.shape[0])
-y_train = np.array(P.y_train[:77])
+y_train = np.array(P.y_train[:62])
 y_train = np.reshape(y_train, y_train.shape[0])
 
 # creating dictionnary
-d = {'y/d': P.X_train['y/d'][:77], 'pred_P': validate_batch, 'y_train': y_train}
+d = {'y/d': P.X_train['y/d'][:62], 'pred_P': validate_batch, 'y_train': y_train}
 output_df_validation = pd.DataFrame(data=d).sort_values(by=['y/d'])
 fig = plt.gcf()
 plt.figure
@@ -165,13 +165,13 @@ plt.legend(['Training', 'Validation'], loc='upper right')
 ax.set_title('Validation with train value')
 
 plt.show()
-fig.savefig('validation.png', dpi=500)
+fig.savefig('64-validation.png', dpi=500)
 
 #%%
 # creating output file for validation data
-d = {'y/d': P.X_train['y/d'][:77], 'pred_P': validate_batch, 'y_train': y_train, 'mse': np.square(validate_batch-y_train)}
+d = {'y/d': P.X_train['y/d'][:62], 'pred_P': validate_batch, 'y_train': y_train, 'mse': np.square(validate_batch-y_train)}
 output_df_validation = pd.DataFrame(data=d).sort_values(by=['y/d'])
-output_df_validation.to_excel("output_df_validation.xlsx")
+output_df_validation.to_excel("64-output_df_validation.xlsx")
 
 W_layers = get_weights(model)
 
