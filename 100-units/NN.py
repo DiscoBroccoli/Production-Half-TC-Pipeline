@@ -37,16 +37,16 @@ def build_model(input_shape):
     regu = regularizers.l2(5e-4)
 
     model = tf.keras.Sequential([
-        Dense(64, activation='relu', kernel_regularizer=regu, kernel_initializer='HeUniform', bias_initializer='zeros',
+        Dense(100, activation='relu', kernel_regularizer=regu, kernel_initializer='HeUniform', bias_initializer='zeros',
               input_shape=input_shape, name='dense_one'),
         BatchNormalization(),  # <- Batch normalisation layer
-        Dense(64, activation='relu', kernel_regularizer=regu, kernel_initializer='HeUniform', bias_initializer='zeros', name='dense_two'),
+        Dense(100, activation='relu', kernel_regularizer=regu, kernel_initializer='HeUniform', bias_initializer='zeros', name='dense_two'),
         BatchNormalization(),
-        Dense(64, activation='relu', kernel_regularizer=regu, kernel_initializer='HeUniform', bias_initializer='zeros', name='dense_three'),
+        Dense(100, activation='relu', kernel_regularizer=regu, kernel_initializer='HeUniform', bias_initializer='zeros', name='dense_three'),
         BatchNormalization(),
-        Dense(64, activation='relu', kernel_initializer='HeUniform', bias_initializer='zeros', name='dense_four'),
+        Dense(100, activation='relu', kernel_initializer='HeUniform', bias_initializer='zeros', name='dense_four'),
         BatchNormalization(),
-        Dense(64, activation='relu', kernel_initializer='HeUniform', bias_initializer='zeros', name='dense_five'),
+        Dense(100, activation='relu', kernel_initializer='HeUniform', bias_initializer='zeros', name='dense_five'),
         BatchNormalization(),
         Dense(1, kernel_initializer='HeUniform')
     ])
@@ -101,7 +101,7 @@ def train_model(model, train_data, train_targets, epochs):
     """
     history = model.fit(train_data, train_targets, epochs=epochs, validation_split=0.2, batch_size=10, verbose=1,
             callbacks=[checkpoint])
-# tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=20)]
+#  tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=20)]
     return history
 
 #%%
@@ -136,14 +136,14 @@ ax = sns.lineplot(x = 'y/d', y = 'y_test', marker="o", data = d)
 ax.set_title('Validation with test value')
 plt.legend(['Predicted', 'Label'], loc='upper right')
 plt.show()
-fig.savefig('64-test.png', dpi=500)
+fig.savefig('100-test.png', dpi=500)
 
 #%%
 
 # creating output file for test data
 d = {'y/d': P.X_test['y/d'], 'pred_P': example_result, 'y_test': y_test, 'mse': np.square(example_result-y_test)}
 output_df_test = pd.DataFrame(data=d).sort_values(by=['y/d'])
-output_df_test.to_excel("64-output_df_test.xlsx")
+output_df_test.to_excel("100-output_df_test.xlsx")
 #%%
 epoch = len(history.history['loss'])
 list_epoch = [ x+1 if x % 1 == 0 else x for x in range(epoch)]
@@ -152,7 +152,7 @@ d = {'epochs': [ x+1 if x % 1 == 0 else x for x in range(epoch)], 'loss': histor
      'val_loss': history.history['val_loss']}
 
 output_df_loss = pd.DataFrame(data=d).sort_values(by=['epochs'])
-output_df_loss.to_excel("64-output_df_loss.xlsx")
+output_df_loss.to_excel("100-output_df_loss.xlsx")
 
 #%%
 
@@ -174,13 +174,13 @@ plt.legend(['Training', 'Validation'], loc='upper right')
 ax.set_title('Validation with train value')
 
 plt.show()
-fig.savefig('64-validation.png', dpi=500)
+fig.savefig('100-validation.png', dpi=500)
 
 #%%
 # creating output file for validation data
 d = {'y/d': P.X_train['y/d'][:62], 'pred_P': validate_batch, 'y_train': y_train, 'mse': np.square(validate_batch-y_train)}
 output_df_validation = pd.DataFrame(data=d).sort_values(by=['y/d'])
-output_df_validation.to_excel("64-output_df_validation.xlsx")
+output_df_validation.to_excel("100-output_df_validation.xlsx")
 
 W_layers = get_weights(model)
 

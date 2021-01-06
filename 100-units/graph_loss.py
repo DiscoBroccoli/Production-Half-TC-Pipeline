@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-loss_info = pd.read_excel('64-output_df_loss.xlsx', index_col=0)
+loss_info = pd.read_excel('100-output_df_loss.xlsx', index_col=0)
 
 fig = plt.gcf()
 plt.figure
@@ -20,7 +20,7 @@ plt.legend(['Training', 'Validation'], loc='upper right')
 axes = plt.gca()
 axes.set_ylim([0,1e-2])
 plt.show()
-fig.savefig('64-loss.png', dpi=500)
+fig.savefig('100-loss.png', dpi=500)
 #%%
 
 print(loss_info.min())
