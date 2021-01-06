@@ -115,7 +115,7 @@ checkpoint = ModelCheckpoint(filepath=checkpoint_path, save_weights_only=False, 
 
 #%%
 
-history = train_model(model, x_train_standard, y_train_shuffled, epochs=2000)
+history = train_model(model, x_train_standard, y_train_shuffled, epochs=3000)
 
 #%%
 

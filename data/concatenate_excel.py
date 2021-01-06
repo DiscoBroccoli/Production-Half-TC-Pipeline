@@ -28,7 +28,7 @@ class Remove_firstlast:
 
     def _remove_flF(self, path) -> pd.DataFrame:
         print(f'Loading following dataset: {path}.')
-        df = pd.read_excel(path)
+        df = pd.read_excel(path, engine='openpyxl')
         # Correcting the dissipation on the wall to be 0
         df.loc[df['y/d'] <= 0, 'Prod'] = 0
         df = df[df['y/d'] <= 0.8]

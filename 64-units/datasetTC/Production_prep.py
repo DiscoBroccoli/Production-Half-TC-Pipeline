@@ -51,7 +51,7 @@ class ProductionDataset:
 
     def _load_dataset(self, path) -> pd.DataFrame:
         print(f'Loading following dataset: {path}.')
-        df = pd.read_excel(path)
+        df = pd.read_excel(path, engine='openpyxl')
         return df
 
     def get_data(self, test: bool = False) -> Tuple[pd.DataFrame, pd.DataFrame]:

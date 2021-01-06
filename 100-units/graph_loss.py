@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-loss_info = pd.read_excel('100-output_df_loss.xlsx', index_col=0)
+loss_info = pd.read_excel('100-output_df_loss.xlsx', index_col=0, engine='openpyxl')
 
 fig = plt.gcf()
 plt.figure
@@ -16,9 +16,11 @@ plt.plot(list(range(start, int(loss_info['epochs'].iloc[-1] + 1))), loss_info['v
 plt.title('Loss vs. epochs')
 plt.ylabel('Loss')
 plt.xlabel('Epoch')
+plt.yscale('log')
+plt.xscale('log')
 plt.legend(['Training', 'Validation'], loc='upper right')
 axes = plt.gca()
-axes.set_ylim([0,1e-2])
+# axes.set_ylim([0,1e-2])
 plt.show()
 fig.savefig('100-loss.png', dpi=500)
 #%%
